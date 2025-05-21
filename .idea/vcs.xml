@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="VcsDirectoryMappings">
+    <mapping directory="$PROJECT_DIR$" vcs="Git" />
+<<<<<<< HEAD
+=======
+    <mapping directory="$PROJECT_DIR$/../proyecto_tetris" vcs="Git" />
+>>>>>>> f28e7ff4e1ab393a66d67252910b73c5722f6bd4
+  </component>
+</project>
