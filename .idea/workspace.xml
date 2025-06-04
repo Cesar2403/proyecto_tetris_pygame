@@ -4,13 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="11a81bba-b9be-4eb7-a57e-9d208dbb4f93" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/../proyecto_tetris/.idea/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../proyecto_tetris/.idea/inspectionProfiles/profiles_settings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../proyecto_tetris/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../proyecto_tetris/.idea/proyecto_tetris.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../proyecto_tetris/.idea/vcs.xml" afterDir="false" />
-    </list>
+    <list default="true" id="11a81bba-b9be-4eb7-a57e-9d208dbb4f93" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -19,9 +13,9 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../proyecto_tetris" />
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 4
-}]]></component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 4
+}</component>
   <component name="ProjectId" id="2xQ1AyKuGpjaLaqlMqYNS1TJPu4" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
@@ -30,6 +24,7 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "Python.codigo_fuente_tetris.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
     "git-widget-placeholder": "main",
@@ -217,5 +212,8 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/proyecto_tetris_pygame$codigo_fuente_tetris.coverage" NAME="codigo_fuente_tetris Coverage Results" MODIFIED="1749067228985" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/../proyecto_tetris/src" />
   </component>
 </project>
