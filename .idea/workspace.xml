@@ -4,7 +4,24 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="11a81bba-b9be-4eb7-a57e-9d208dbb4f93" name="Changes" comment="" />
+    <list default="true" id="11a81bba-b9be-4eb7-a57e-9d208dbb4f93" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/../proyecto_tetris/tests/Casos de prueba iteracion 5.docx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../proyecto_tetris/docs/Cuadro de features, bugfixes, y enhancements.docx" beforeDir="false" afterPath="$PROJECT_DIR$/../proyecto_tetris/assets/docs/Cuadro de features, bugfixes, y enhancements.docx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../proyecto_tetris/docs/diagramas_flujo/colisionPiezas.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/../proyecto_tetris/assets/docs/diagramas_flujo/colisionPiezas.jpg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../proyecto_tetris/docs/diagramas_flujo/eliminarFila.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/../proyecto_tetris/assets/docs/diagramas_flujo/eliminarFila.jpg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../proyecto_tetris/docs/diagramas_flujo/movimientoPiezas.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/../proyecto_tetris/assets/docs/diagramas_flujo/movimientoPiezas.jpg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../proyecto_tetris/docs/diagramas_flujo/movimientoPiezas2.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/../proyecto_tetris/assets/docs/diagramas_flujo/movimientoPiezas2.jpg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../proyecto_tetris/docs/diagramas_flujo/rotacionPiezas.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/../proyecto_tetris/assets/docs/diagramas_flujo/rotacionPiezas.jpg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../proyecto_tetris/images/Cubo.jpeg" beforeDir="false" afterPath="$PROJECT_DIR$/../proyecto_tetris/assets/images/Cubo.jpeg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../proyecto_tetris/images/Letra I.jpeg" beforeDir="false" afterPath="$PROJECT_DIR$/../proyecto_tetris/assets/images/Letra I.jpeg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../proyecto_tetris/images/Letra L invertida.jpeg" beforeDir="false" afterPath="$PROJECT_DIR$/../proyecto_tetris/assets/images/Letra L invertida.jpeg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../proyecto_tetris/images/Letra L.jpeg" beforeDir="false" afterPath="$PROJECT_DIR$/../proyecto_tetris/assets/images/Letra L.jpeg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../proyecto_tetris/images/Letra S invertida.jpeg" beforeDir="false" afterPath="$PROJECT_DIR$/../proyecto_tetris/assets/images/Letra S invertida.jpeg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../proyecto_tetris/images/Letra S.jpeg" beforeDir="false" afterPath="$PROJECT_DIR$/../proyecto_tetris/assets/images/Letra S.jpeg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../proyecto_tetris/images/Letra T.jpeg" beforeDir="false" afterPath="$PROJECT_DIR$/../proyecto_tetris/assets/images/Letra T.jpeg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../proyecto_tetris/src/codigo_fuente_tetris.py" beforeDir="false" afterPath="$PROJECT_DIR$/../proyecto_tetris/src/codigo_fuente_tetris.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../proyecto_tetris/tests/Casos de prueba.docx" beforeDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -28,6 +45,7 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
     "git-widget-placeholder": "main",
+    "last_opened_file_path": "C:/Users/Usuario/PycharmProjects/proyecto_tetris/tests",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -37,6 +55,14 @@
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\Usuario\PycharmProjects\proyecto_tetris\tests" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\Usuario\PycharmProjects\proyecto_tetris\assets" />
+    </key>
+  </component>
   <component name="RunManager">
     <configuration default="true" type="DjangoTestsConfigurationType">
       <module name="proyecto_tetris" />
@@ -214,6 +240,6 @@
     </option>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/proyecto_tetris_pygame$codigo_fuente_tetris.coverage" NAME="codigo_fuente_tetris Coverage Results" MODIFIED="1749067228985" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/../proyecto_tetris/src" />
+    <SUITE FILE_PATH="coverage/proyecto_tetris_pygame$codigo_fuente_tetris.coverage" NAME="codigo_fuente_tetris Coverage Results" MODIFIED="1749067601647" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/../proyecto_tetris/src" />
   </component>
 </project>
