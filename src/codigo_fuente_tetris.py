@@ -98,7 +98,7 @@ def rotar_pieza():
         forma_pieza = forma_vieja
 
 
-# dsdssjfkdjfs
+
 def eliminar_filas_completas():
     eliminadas = 0
     for y in range(FILAS - 1, -1, -1):
