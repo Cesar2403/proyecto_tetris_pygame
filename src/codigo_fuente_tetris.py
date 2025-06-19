@@ -20,6 +20,8 @@ FILAS = ALTO_PANTALLA // TAMANO_BLOQUE
 pygame.init()
 pantalla = pygame.display.set_mode((ANCHO_PANTALLA, ALTO_PANTALLA))
 clock = pygame.time.Clock()
+fondo = pygame.image.load("../assets/images/fondo_tetris.png")
+fondo = pygame.transform.scale(fondo, (ANCHO_PANTALLA, ALTO_PANTALLA))
 pygame.display.set_caption("Pygame Tetris")
 
 tablero = [[0 for _ in range(COLUMNAS)] for _ in range(FILAS)]
@@ -120,7 +122,7 @@ def main():
 
     running = True
     while running:
-        pantalla.fill("BLACK")
+        pantalla.blit (fondo, (0,0))
         crear_recuadro()
 
         tiempo_actual = pygame.time.get_ticks()
