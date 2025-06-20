@@ -24,8 +24,9 @@ fondo = pygame.image.load("../assets/images/fondo_tetris.png")
 fondo = pygame.transform.scale(fondo, (ANCHO_PANTALLA, ALTO_PANTALLA))
 pygame.display.set_caption("Pygame Tetris")
 
-tablero = [[0 for _ in range(COLUMNAS)] for _ in range(FILAS)]
-forma_pieza = random.choice(FORMAS)
+tablero = [[None for _ in range(COLUMNAS)] for _ in range(FILAS)]
+indice_pieza_actual = random.randint(0, len(FORMAS) - 1)
+forma_pieza = FORMAS[indice_pieza_actual]
 x_pieza = COLUMNAS // 2 - len(forma_pieza[0]) // 2
 y_pieza = 0
 color_pieza = ("blue")
@@ -36,15 +37,24 @@ tiempo_ultima_rotacion = 0
 delay_rotacion = 200
 espacio_presionado_anteriormente = False
 
+imagenes_piezas = {
+    0: pygame.transform.scale(pygame.image.load("../assets/images/Letra I.png").convert_alpha(), (30, 30)),
+    1: pygame.transform.scale(pygame.image.load("../assets/images/Letra L invertida.png").convert_alpha(), (30, 30)),
+    2: pygame.transform.scale(pygame.image.load("../assets/images/Letra L.png").convert_alpha(), (30, 30)),
+    3: pygame.transform.scale(pygame.image.load("../assets/images/Cubo.png").convert_alpha(), (30, 30)),
+    4: pygame.transform.scale(pygame.image.load("../assets/images/Letra S.png").convert_alpha(),(30, 30)),
+    5: pygame.transform.scale(pygame.image.load("../assets/images/Letra T.png").convert_alpha(), (30, 30)),
+    6: pygame.transform.scale(pygame.image.load("../assets/images/Letra S invertida.png").convert_alpha(), (30, 30)),
+
+}
 
 def crear_pieza():
     for i, fila in enumerate(forma_pieza):
         for j, celda in enumerate(fila):
             if celda:
-                pygame.draw.rect(pantalla, color_pieza,
-                                 ((x_pieza + j) * TAMANO_BLOQUE,
-                                  (y_pieza + i) * TAMANO_BLOQUE,
-                                  TAMANO_BLOQUE, TAMANO_BLOQUE))
+                x = (x_pieza + j) * TAMANO_BLOQUE
+                y = (y_pieza + i) * TAMANO_BLOQUE
+                pantalla.blit(imagenes_piezas[indice_pieza_actual], (x, y))
 
 
 def crear_recuadro():
@@ -70,13 +80,14 @@ def colocar_pieza():
     for i, fila in enumerate(forma_pieza):
         for j, celda in enumerate(fila):
             if celda and y_pieza + i >= 0:
-                tablero[y_pieza + i][x_pieza + j] = color_pieza
+                tablero[y_pieza + i][x_pieza + j] = indice_pieza_actual
     return eliminar_filas_completas()
 
 
 def nueva_pieza():
-    global forma_pieza, x_pieza, y_pieza
-    forma_pieza = random.choice(FORMAS)
+    global forma_pieza, x_pieza, y_pieza, indice_pieza_actual
+    indice_pieza_actual = random.randint(0, len(FORMAS) - 1)
+    forma_pieza = FORMAS[indice_pieza_actual]
     x_pieza = COLUMNAS // 2 - len(forma_pieza[0]) // 2
     y_pieza = 0
     if colision():
@@ -100,7 +111,7 @@ def rotar_pieza():
         forma_pieza = forma_vieja
 
 
-# dsdssjfkdjfs
+
 def eliminar_filas_completas():
     eliminadas = 0
     for y in range(FILAS - 1, -1, -1):
@@ -192,11 +203,8 @@ def main():
 
         for y in range(FILAS):
             for x in range(COLUMNAS):
-                if tablero[y][x]:
-                    pygame.draw.rect(pantalla, tablero[y][x],
-                                     (x * TAMANO_BLOQUE, y * TAMANO_BLOQUE,
-                                      TAMANO_BLOQUE, TAMANO_BLOQUE))
-
+                if tablero[y][x] is not None:
+                   pantalla.blit(imagenes_piezas[tablero[y][x]], (x  * TAMANO_BLOQUE, y * TAMANO_BLOQUE))
         crear_pieza()
         pygame.display.flip()
         clock.tick(60)
