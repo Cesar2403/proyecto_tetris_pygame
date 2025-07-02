@@ -1,6 +1,7 @@
 import pygame
 import random
 
+
 FORMAS = [
     [[1, 1, 1, 1]],  # linea
     [[1, 0, 0], [1, 1, 1]],  # L invertida
@@ -22,61 +23,114 @@ colores_piezas = {
     5: (160, 32, 240),
     6: (255, 0, 0),
 }
-
-COLUMNAS_TABLERO = 10
+#constantes
+COLUMNAS = 10
 FILAS = 20
-TAMANO_BLOQUE = 30
-ANCHO_TABLERO = COLUMNAS_TABLERO * TAMANO_BLOQUE  # 300 px
-ALTO_PANTALLA = FILAS * TAMANO_BLOQUE  # 600 px
+TAM_BLOQUE = 30
+#Dimensiones que tiene el tablero
+
+ANCHO_TABLERO = COLUMNAS * TAM_BLOQUE  # 300 px
+ALTO_PANTALLA = FILAS * TAM_BLOQUE  # 600 px
 ESPACIO_LATERAL = 150
 MARGEN_IZQUIERDO = 200
 ANCHO_PANTALLA = MARGEN_IZQUIERDO + ANCHO_TABLERO + ESPACIO_LATERAL
+#Pantalla
 
-pygame.init()
-pantalla = pygame.display.set_mode((ANCHO_PANTALLA, ALTO_PANTALLA))
-tablero = [[None for _ in range(COLUMNAS_TABLERO)] for _ in range(FILAS)]
-clock = pygame.time.Clock()
-pygame.display.set_caption("Pygame Tetris")
+ARCHIVO_RECORDS= "records.txt"
+MAX_RECORDS = 10
+#Records
 
-tablero = [[None for _ in range(COLUMNAS_TABLERO)] for _ in range(FILAS)]
+
+#variables
+tablero = [[None for _ in range(COLUMNAS)] for _ in range(FILAS)]
+
 indice_pieza_actual = random.randint(0, len(FORMAS) - 1)
 forma_pieza = FORMAS[indice_pieza_actual]
-x_pieza = COLUMNAS_TABLERO // 2 - len(forma_pieza[0]) // 2
+x_pieza = COLUMNAS // 2 - len(forma_pieza[0]) // 2
 y_pieza = 0
+
 velocidad_caida = 1.5
 tiempo_caida = pygame.time.get_ticks()
+
 tiempo_movimiento_horizontal = pygame.time.get_ticks()
 intervalo_movimiento = 200
 tiempo_ultima_rotacion = 0
 delay_rotacion = 200
+
 espacio_presionado_anteriormente = False
 pieza_guardada = None
-pieza_guardada_este_turno = False
+pieza_guardada_anteriormente = False
+
 pausado = False
 puntos = 0
 back_to_back = False
 bonus_back_to_back = 0.5
 nivel = 1
 puntos_siguiente_nivel = 1000
-velocidad_caida = 1.0
+
 indice_pieza_siguiente = random.randint(0, len(FORMAS) - 1)
 mostrar_back_to_back = False
+
+pygame.init()
+pantalla = pygame.display.set_mode((ANCHO_PANTALLA, ALTO_PANTALLA))
+clock = pygame.time.Clock()
+pygame.display.set_caption("Tetris")
+def cargar_records():
+    records = []
+    try:
+        with open("records.txt", "r") as f:
+            for linea in f:
+                partes = linea.strip().split(",")
+                if len(partes) == 2:
+                    nombre, puntaje = partes[0], int(partes[1])
+                    records.append((nombre, puntaje))
+    except FileNotFoundError:
+        pass
+    return records
+
+
+def guardar_records(records):
+    with open("records.txt", "w") as f:
+        for nombre, puntaje in records[:10]:
+            f.write(f"{nombre},{puntaje}\n")
+
+
+def agregar_nuevo_record(nombre, puntaje):
+    records = cargar_records()
+    records.append((nombre, puntaje))
+    records.sort(key=lambda x: x[1], reverse=True)
+    guardar_records(records)
+
+
+def entra_en_top(puntuacion):
+    records = cargar_records()
+    if len(records) < 10:
+        return True
+    return puntuacion > records[-1][1]
+
+
+
+
+
+
+
+
 
 
 def crear_pieza():
     for i, fila in enumerate(forma_pieza):
         for j, celda in enumerate(fila):
             if celda:
-                x = MARGEN_IZQUIERDO + (x_pieza + j) * TAMANO_BLOQUE
-                y = (y_pieza + i) * TAMANO_BLOQUE
-                pygame.draw.rect(pantalla, colores_piezas[indice_pieza_actual], (x, y, TAMANO_BLOQUE, TAMANO_BLOQUE))
-                pygame.draw.rect(pantalla, (0, 0, 0), (x, y, TAMANO_BLOQUE, TAMANO_BLOQUE), 1)
+                x = MARGEN_IZQUIERDO + (x_pieza + j) * TAM_BLOQUE
+                y = (y_pieza + i) * TAM_BLOQUE
+                pygame.draw.rect(pantalla, colores_piezas[indice_pieza_actual], (x, y, TAM_BLOQUE, TAM_BLOQUE))
+                pygame.draw.rect(pantalla, (0, 0, 0), (x, y, TAM_BLOQUE, TAM_BLOQUE), 1)
 
 
 def crear_recuadro():
-    for x in range(0, ANCHO_TABLERO + 1, TAMANO_BLOQUE):
+    for x in range(0, ANCHO_TABLERO + 1, TAM_BLOQUE):
         pygame.draw.line(pantalla, (50, 50, 70), (x + MARGEN_IZQUIERDO, 0), (x + MARGEN_IZQUIERDO, ALTO_PANTALLA))
-    for y in range(0, ALTO_PANTALLA + 1, TAMANO_BLOQUE):
+    for y in range(0, ALTO_PANTALLA + 1, TAM_BLOQUE):
         pygame.draw.line(pantalla, (50, 50, 70), (MARGEN_IZQUIERDO, y), (MARGEN_IZQUIERDO + ANCHO_TABLERO, y))
 
 
@@ -86,7 +140,7 @@ def colision():
             if celda:
                 ny = y_pieza + i
                 nx = x_pieza + j
-                if nx < 0 or nx >= COLUMNAS_TABLERO:
+                if nx < 0 or nx >= COLUMNAS:
                     return True
                 if ny >= FILAS:
                     return True
@@ -104,13 +158,13 @@ def colocar_pieza():
 
 
 def nueva_pieza():
-    global forma_pieza, x_pieza, y_pieza, indice_pieza_actual, ya_se_guardo_esta_vuelta, indice_pieza_siguiente
+    global forma_pieza, x_pieza, y_pieza, indice_pieza_actual, pieza_guardada_anteriormente, indice_pieza_siguiente
 
     indice_pieza_actual = indice_pieza_siguiente
     forma_pieza = FORMAS[indice_pieza_actual]
-    x_pieza = COLUMNAS_TABLERO // 2 - len(forma_pieza[0]) // 2
+    x_pieza = COLUMNAS // 2 - len(forma_pieza[0]) // 2
     y_pieza = 0
-    ya_se_guardo_esta_vuelta = False
+    pieza_guardada_anteriormente = False
 
     indice_pieza_siguiente = random.randint(0, len(FORMAS) - 1)
 
@@ -152,7 +206,7 @@ def eliminar_filas_completas():
     y = FILAS - 1
     while y >= 0:
         linea_completa = True
-        for x in range(COLUMNAS_TABLERO):
+        for x in range(COLUMNAS):
             if tablero[y][x] is None:
                 linea_completa = False
                 break
@@ -160,16 +214,16 @@ def eliminar_filas_completas():
             eliminadas += 1
             for y2 in range(y, 0, -1):
                 tablero[y2] = tablero[y2 - 1].copy()
-            tablero[0] = [None] * COLUMNAS_TABLERO
+            tablero[0] = [None] * COLUMNAS
             y += 1
         y -= 1
     return eliminadas
 
 
 def guardar_pieza():
-    global pieza_guardada, forma_pieza, indice_pieza_actual, x_pieza, y_pieza, pieza_guardada_este_turno
+    global pieza_guardada, forma_pieza, indice_pieza_actual, x_pieza, y_pieza, pieza_guardada_anteriormente
 
-    if pieza_guardada_este_turno:
+    if pieza_guardada_anteriormente:
         return
 
     if pieza_guardada is None:
@@ -180,13 +234,13 @@ def guardar_pieza():
     else:
         pieza_guardada, indice_pieza_actual = indice_pieza_actual, pieza_guardada
         forma_pieza = FORMAS[indice_pieza_actual]
-        x_pieza = COLUMNAS_TABLERO // 2 - len(forma_pieza[0]) // 2
+        x_pieza = COLUMNAS // 2 - len(forma_pieza[0]) // 2
         y_pieza = 0
         if colision():
             pygame.quit()
             exit()
 
-    pieza_guardada_este_turno = True
+    pieza_guardada_anteriormente = True
 
 
 def sumar_puntos(filas_eliminadas):
@@ -250,7 +304,7 @@ def colision_en(nueva_y):
                 ny = nueva_y + i
                 nx = x_pieza + j
 
-                if nx < 0 or nx >= COLUMNAS_TABLERO:
+                if nx < 0 or nx >= COLUMNAS:
                     return True
 
                 if ny >= FILAS:
@@ -260,6 +314,204 @@ def colision_en(nueva_y):
                     if tablero[ny][nx] is not None:
                         return True
     return False
+
+
+def dibujar_ghost_piece():
+    ghost_y = y_pieza
+    while not colision_en(ghost_y + 1):
+        ghost_y += 1
+
+    for i, fila in enumerate(forma_pieza):
+        for j, celda in enumerate(fila):
+            if celda:
+                x = MARGEN_IZQUIERDO + (x_pieza + j) * TAM_BLOQUE
+                y = (ghost_y + i) * TAM_BLOQUE
+                color = colores_piezas[indice_pieza_actual]
+                color_translucido = (color[0] // 3, color[1] // 3, color[2] // 3)
+                pygame.draw.rect(pantalla, color_translucido, (x, y, TAM_BLOQUE, TAM_BLOQUE))
+                pygame.draw.rect(pantalla, (50, 50, 50), (x, y, TAM_BLOQUE, TAM_BLOQUE), 1)
+
+
+def menu_pausa():
+    opciones = ["Reanudar", "Reiniciar", "Salir"]
+    opcion_seleccionada = 0
+    fuente = pygame.font.SysFont(None, 40)
+    fuente_titulo = pygame.font.SysFont(None, 60)
+
+    while True:
+        pantalla.fill((20, 20, 20))
+
+        texto_titulo = fuente_titulo.render("PAUSA", True, (255, 255, 255))
+        pantalla.blit(texto_titulo, (
+            ANCHO_PANTALLA // 2 - texto_titulo.get_width() // 2,
+            ALTO_PANTALLA // 4 - texto_titulo.get_height() // 2
+        ))
+
+        for i, texto in enumerate(opciones):
+            es_seleccionada = i == opcion_seleccionada
+            color = (255, 255, 0) if es_seleccionada else (255, 255, 255)
+            prefijo = "> " if es_seleccionada else " "
+            render = fuente.render(prefijo + texto, True, color)
+            x = ANCHO_PANTALLA // 2 - render.get_width() // 2
+            y = ALTO_PANTALLA // 2 + i * 50
+            pantalla.blit(render, (x, y))
+
+        pygame.display.flip()
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                return "salir"
+
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_UP:
+                    opcion_seleccionada = (opcion_seleccionada - 1) % len(opciones)
+                elif event.key == pygame.K_DOWN:
+                    opcion_seleccionada = (opcion_seleccionada + 1) % len(opciones)
+                elif event.key == pygame.K_RETURN:
+                    return opciones[opcion_seleccionada].lower()
+
+
+def reiniciar_juego():
+    global tablero, indice_pieza_actual, forma_pieza, x_pieza, y_pieza
+    global velocidad_caida, tiempo_caida, tiempo_movimiento_horizontal
+    global pieza_guardada, pieza_guardada_anteriormente, pausado
+    global puntos, back_to_back, nivel, puntos_siguiente_nivel
+    global indice_pieza_siguiente, mostrar_back_to_back
+
+    tablero = [[None for _ in range(COLUMNAS)] for _ in range(FILAS)]
+    indice_pieza_actual = random.randint(0, len(FORMAS) - 1)
+    forma_pieza = FORMAS[indice_pieza_actual]
+    x_pieza = COLUMNAS // 2 - len(forma_pieza[0]) // 2
+    y_pieza = 0
+    velocidad_caida = 1.0
+    tiempo_caida = pygame.time.get_ticks()
+    tiempo_movimiento_horizontal = pygame.time.get_ticks()
+    pieza_guardada = None
+    pieza_guardada_anteriormente = False
+    pausado = False
+    puntos = 0
+    back_to_back = False
+    nivel = 1
+    puntos_siguiente_nivel = 1000
+    indice_pieza_siguiente = random.randint(0, len(FORMAS) - 1)
+    mostrar_back_to_back = False
+
+
+def ingresar_nombre():
+    letras = [chr(i) for i in range(65, 91)]
+    seleccion = [0, 0, 0]
+    posicion = 0
+    fuente = pygame.font.SysFont(None, 50)
+
+    while True:
+        pantalla.fill((0, 0, 0))
+
+        # Texto
+        titulo = fuente.render("¡Nuevo récord!", True, (255, 255, 255))
+        pantalla.blit(titulo, (ANCHO_PANTALLA // 2 - titulo.get_width() // 2, 100))
+
+        instruccion = pygame.font.SysFont(None, 30).render(
+            "Usa flechas para escribir tus 3 letras y Enter para confirmar", True, (200, 200, 200))
+        pantalla.blit(instruccion, (ANCHO_PANTALLA // 2 - instruccion.get_width() // 2, 150))
+
+        for i in range(3):
+            letra = letras[seleccion[i]]
+            color = (255, 255, 0) if i == posicion else (255, 255, 255)
+            texto = fuente.render(letra, True, color)
+            pantalla.blit(texto, (
+                ANCHO_PANTALLA // 2 - 60 + i * 40,
+                ALTO_PANTALLA // 2
+            ))
+
+        pygame.display.flip()
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                return "AAA"
+
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_LEFT:
+                    posicion = (posicion - 1) % 3
+                elif event.key == pygame.K_RIGHT:
+                    posicion = (posicion + 1) % 3
+                elif event.key == pygame.K_UP:
+                    seleccion[posicion] = (seleccion[posicion] - 1) % len(letras)
+                elif event.key == pygame.K_DOWN:
+                    seleccion[posicion] = (seleccion[posicion] + 1) % len(letras)
+                elif event.key == pygame.K_RETURN:
+                    nombre = "".join([letras[i] for i in seleccion])
+                    return nombre
+
+
+def menu_principal():
+    opciones = ["Jugar", "Hall of Fame", "Salir"]
+    opcion_seleccionada = 0
+    fuente = pygame.font.SysFont(None, 40)
+    fuente_titulo = pygame.font.SysFont(None, 60)
+
+    while True:
+        pantalla.fill((10, 10, 30))
+
+        texto_titulo = fuente_titulo.render("TETRIS", True, (255, 255, 255))
+        pantalla.blit(texto_titulo, (
+            ANCHO_PANTALLA // 2 - texto_titulo.get_width() // 2,
+            ALTO_PANTALLA // 4
+        ))
+
+        for i, texto in enumerate(opciones):
+            es_seleccionada = i == opcion_seleccionada
+            color = (255, 255, 0) if es_seleccionada else (255, 255, 255)
+            prefijo = "> " if es_seleccionada else "  "
+            render = fuente.render(prefijo + texto, True, color)
+            pantalla.blit(render, (
+                ANCHO_PANTALLA // 2 - render.get_width() // 2,
+                ALTO_PANTALLA // 2 + i * 50
+            ))
+
+        fuente_version = pygame.font.SysFont(None, 20)
+        texto_version = fuente_version.render("Ver 1.0", True, (180, 180, 180))
+        pantalla.blit(texto_version, (10, ALTO_PANTALLA - 25))
+
+        pygame.display.flip()
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                return "salir"
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_UP:
+                    opcion_seleccionada = (opcion_seleccionada - 1) % len(opciones)
+                elif event.key == pygame.K_DOWN:
+                    opcion_seleccionada = (opcion_seleccionada + 1) % len(opciones)
+                elif event.key == pygame.K_RETURN:
+                    return opciones[opcion_seleccionada].lower()
+
+
+def mostrar_hall_of_fame():
+    fuente_titulo = pygame.font.SysFont(None, 50)
+    fuente = pygame.font.SysFont(None, 30)
+
+    records = cargar_records()
+
+    while True:
+        pantalla.fill((10, 10, 30))
+        titulo = fuente_titulo.render("Hall of Fame", True, (255, 255, 255))
+        pantalla.blit(titulo, (ANCHO_PANTALLA // 2 - titulo.get_width() // 2, 50))
+
+        for i, (nombre, puntaje) in enumerate(records[:10]):
+            texto = fuente.render(f"{i + 1}. {nombre} - {puntaje}", True, (200, 200, 200))
+            pantalla.blit(texto, (ANCHO_PANTALLA // 2 - 100, 120 + i * 30))
+
+        instruccion = fuente.render("Presiona ESC para volver", True, (150, 150, 150))
+        pantalla.blit(instruccion, (ANCHO_PANTALLA // 2 - instruccion.get_width() // 2, ALTO_PANTALLA - 50))
+
+        pygame.display.flip()
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                return "salir"
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    return "volver"
 
 
 def main():
@@ -279,11 +531,13 @@ def main():
                     pausado = not pausado
 
         if pausado:
-            fuente = pygame.font.SysFont(None, 50)
-            texto_pausa = fuente.render("PAUSA", True, (255, 255, 255))
-            pantalla.blit(texto_pausa, (ANCHO_PANTALLA // 2 - 60, ALTO_PANTALLA // 2 - 25))
-            pygame.display.flip()
-            clock.tick(60)
+            accion = menu_pausa()
+            if accion == "reanudar":
+                pausado = False
+            elif accion == "reiniciar":
+                reiniciar_juego()
+            elif accion == "salir":
+                return "menu"
             continue
 
         tiempo_actual = pygame.time.get_ticks()
@@ -301,6 +555,9 @@ def main():
                     pantalla.blit(texto_game_over, (ANCHO_PANTALLA // 2 - 150, ALTO_PANTALLA // 2 - 30))
                     pygame.display.flip()
                     pygame.time.wait(3000)
+                    if entra_en_top(puntos):
+                        nombre = ingresar_nombre()
+                        agregar_nuevo_record(nombre, puntos)
                     running = False
 
         keys = pygame.key.get_pressed()
@@ -311,7 +568,7 @@ def main():
                 if colision():
                     x_pieza += 1
 
-            if keys[pygame.K_RIGHT] and x_pieza < COLUMNAS_TABLERO - len(forma_pieza[0]):
+            if keys[pygame.K_RIGHT] and x_pieza < COLUMNAS - len(forma_pieza[0]):
                 x_pieza += 1
                 tiempo_movimiento_horizontal = tiempo_actual
                 if colision():
@@ -357,14 +614,16 @@ def main():
             rotar_pieza()
 
         for y in range(FILAS):
-            for x in range(COLUMNAS_TABLERO):
+            for x in range(COLUMNAS):
                 if tablero[y][x] is not None:
                     pygame.draw.rect(pantalla, colores_piezas[tablero[y][x]],
-                                     (MARGEN_IZQUIERDO + x * TAMANO_BLOQUE, y * TAMANO_BLOQUE, TAMANO_BLOQUE,
-                                      TAMANO_BLOQUE))
+                                     (MARGEN_IZQUIERDO + x * TAM_BLOQUE, y * TAM_BLOQUE, TAM_BLOQUE,
+                                      TAM_BLOQUE))
                     pygame.draw.rect(pantalla, (0, 0, 0),
-                                     (MARGEN_IZQUIERDO + x * TAMANO_BLOQUE, y * TAMANO_BLOQUE, TAMANO_BLOQUE,
-                                      TAMANO_BLOQUE), 1)
+                                     (MARGEN_IZQUIERDO + x * TAM_BLOQUE, y * TAM_BLOQUE, TAM_BLOQUE,
+                                      TAM_BLOQUE), 1)
+
+        dibujar_ghost_piece()
 
         crear_pieza()
 
@@ -379,6 +638,13 @@ def main():
         texto_nivel = fuente.render(f"Nivel: {nivel}", True, (0, 255, 0))
         pantalla.blit(texto_nivel, (10, 40))
 
+        records = cargar_records()
+        fuente = pygame.font.SysFont(None, 24)
+        pantalla.blit(fuente.render("Top 3:", True, (255, 255, 255)), (10, 100))
+        for i, (nombre, score) in enumerate(records[:3]):
+            texto = fuente.render(f"{i + 1}. {nombre} - {score}", True, (200, 200, 200))
+            pantalla.blit(texto, (10, 130 + i * 30))
+
         fuente_panel = pygame.font.SysFont(None, 24)
         texto_siguiente = fuente_panel.render("Siguiente:", True, (255, 255, 255))
         pantalla.blit(texto_siguiente, (ANCHO_PANTALLA - ESPACIO_LATERAL + 20, 20))
@@ -386,8 +652,8 @@ def main():
         dibujar_pieza_en_panel(FORMAS[indice_pieza_siguiente], indice_pieza_siguiente,
                                ANCHO_PANTALLA - ESPACIO_LATERAL + 20, 50)
 
-        texto_guardada = fuente_panel.render("Guardada:", True, (255, 255, 255))
-        pantalla.blit(texto_guardada, (ANCHO_PANTALLA - ESPACIO_LATERAL + 20, 150))
+        texto_guardado = fuente_panel.render("Guardada:", True, (255, 255, 255))
+        pantalla.blit(texto_guardado, (ANCHO_PANTALLA - ESPACIO_LATERAL + 20, 150))
 
         if pieza_guardada is not None:
             dibujar_pieza_en_panel(FORMAS[pieza_guardada], pieza_guardada, ANCHO_PANTALLA - ESPACIO_LATERAL + 20, 180)
@@ -396,5 +662,20 @@ def main():
         clock.tick(60)
 
 
-main()
+while True:
+    opcion = menu_principal()
+    if opcion == "jugar":
+        reiniciar_juego()
+        resultado = main()
+        if resultado == "menu":
+            continue
+        elif resultado == "reiniciar":
+            continue
+    elif opcion == "hall of fame":
+        resultado = mostrar_hall_of_fame()
+        if resultado == "salir":
+            break
+    elif opcion == "salir":
+        break
+
 pygame.quit()
